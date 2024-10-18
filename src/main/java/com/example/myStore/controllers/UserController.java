@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.servlet.http.HttpSession;
+
 
 @Controller
 public class UserController {
@@ -42,16 +44,21 @@ public class UserController {
         User user = new User();
         user.setPassword(userDTO.getPassword());
         user.setEmail(userDTO.getEmail());
-        userDA.save(user);
+        user.setRoleName(userDTO.getRoleName());
 
+        if (user.getRoleName() == null || user.getRoleName().isEmpty()) {
+            user.setRoleName("user");
+        }
+        userDA.save(user);
         // Add success message and redirect to login page
         redirectAttributes.addFlashAttribute("successMessage", "Registration successful! You can now log in.");
         return "redirect:/login";
     }
 
     // Handle user login
+
     @PostMapping("/login")
-    public String login(@ModelAttribute("userDTO") @Valid UserDTO userDTO, BindingResult bindingResult, Model model) {
+    public String login(@ModelAttribute("userDTO") @Valid UserDTO userDTO, BindingResult bindingResult, Model model, HttpSession session) {
         String email = userDTO.getEmail();
         String password = userDTO.getPassword();
 
@@ -62,7 +69,12 @@ public class UserController {
             bindingResult.rejectValue("email", "error", "Invalid email or password");
             return "user/login"; // Return to the login page with an error message
         } else {
-            return "user/index.html"; // Redirect to user index page upon successful login
+            String roleName = user.getRoleName();  // Get role from user
+            session.setAttribute("roleName", roleName);  // Store roleName in session
+
+            return "redirect:/products"; // Redirect to the products page after successful login
         }
     }
+
+
 }

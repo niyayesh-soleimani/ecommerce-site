@@ -109,10 +109,13 @@
 
 <div class="container">
     <h1 class="text-center my-4">Products</h1>
+
     <div class="mb-4 text-end">
-        <a class="btn btn-success btn-lg" href="/products/create">
-            <i class="bi bi-plus-circle"></i> Create Product
-        </a>
+        <th:block th:if="${roleName == 'admin'}">
+            <a class="btn btn-success btn-lg" href="/products/create">
+                <i class="bi bi-plus-circle"></i> Create Product
+            </a>
+        </th:block>
     </div>
     <div class="row">
         <!-- Loop through products -->
@@ -126,8 +129,12 @@
                 <div class="product-category" th:text="${product.category}"></div>
                 <div class="product-price" th:text="${product.price}"></div>
                 <div class="btn-group">
-                    <a class="btn btn-primary btn-sm" th:href="@{/products/edit(id=${product.id})}">Edit</a>
-                    <a class="btn btn-danger btn-sm" th:href="@{/products/delete(id=${product.id})}" onclick="return confirm('Are you sure?')">Delete</a>
+                    <th:block th:if="${roleName == 'admin'}">
+                        <a class="btn btn-primary btn-sm" th:href="@{/products/edit(id=${product.id})}">Edit</a>
+                    </th:block>
+                    <th:block th:if="${roleName == 'admin'}">
+                        <a class="btn btn-danger btn-sm" th:href="@{/products/delete(id=${product.id})}" onclick="return confirm('Are you sure?')">Delete</a>
+                    </th:block>
                 </div>
             </div>
         </div>

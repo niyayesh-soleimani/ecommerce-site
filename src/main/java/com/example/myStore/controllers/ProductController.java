@@ -4,6 +4,7 @@ import com.example.myStore.entity.Product;
 import com.example.myStore.entity.ProductDTO;
 import com.example.myStore.repository.ProductDA;
 import com.example.myStore.service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,12 +38,17 @@ public class ProductController {
     @GetMapping({"", "/"})
     public String showProductList(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "10") int size,
-                                  Model model) {
+                                  Model model, HttpSession session) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Product> productPage = productService.findAllProducts(pageable);
         model.addAttribute("products", productPage.getContent()); // Add product list to model
         model.addAttribute("currentPage", page); // Add current page number
         model.addAttribute("totalPages", productPage.getTotalPages()); // Add total number of pages
+
+
+        String roleName = (String) session.getAttribute("roleName");
+        model.addAttribute("roleName", roleName);
+
         return "products/index.html"; // Return the product list view
     }
 

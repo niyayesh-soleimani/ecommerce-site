@@ -16,7 +16,7 @@ public class UserDTO {
     @Size(min = 8, max = 12, message = "The password must be between 8 and 12 characters")
     private String password;
     @Setter(AccessLevel.NONE)
-    private String roleName = "user";
+    private String roleName ;
 
 }
 
